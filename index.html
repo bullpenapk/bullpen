@@ -1,146 +1,88 @@
-<h3>Admin Panel</h3>
-<input type="text" id="adminUsername" placeholder="Admin Username">
-<input type="password" id="adminPassword" placeholder="Admin Password">
-<button class="btn-admin" onclick="adminLogin()">Login as Admin</button>
-</div>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al Arafa Packing Company</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+    <style>
+        .maroon-bg { background-color: #5c1d0d; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
 
-<!-- Admin Section -->
-<div class="section" id="adminSection">
-<h3>Add Balance to User</h3>
-<input type="text" id="adminRefCode" placeholder="User Ref Code">
-<input type="number" id="adminAmount" placeholder="Amount">
-<button class="btn-admin" onclick="addBalance()">Add Balance</button>
-</div>
+    <!-- Header -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold text-[#5c1d0d] uppercase italic">Al Arafa Packing Co.</div>
+            <a href="https://wa.me" class="bg-green-500 text-white px-4 py-2 rounded-full font-bold flex items-center hover:bg-green-600 shadow-lg">
+                <i class="fab fa-whatsapp mr-2"></i> WhatsApp
+            </a>
+        </div>
+    </nav>
 
-<!-- Deposit Modal -->
-<div id="depositModalOverlay">
-<div id="depositModal">
-<h3>Send Money to 01956715958 via bKash/Nagad</h3>
-<p>Amount: <span id="depositAmountDisplay"></span> Taka</p>
-<label>Enter Transaction ID</label>
-<input type="text" id="trxId" placeholder="Enter Transaction ID">
-<button class="btn-primary" onclick="submitDeposit()">Submit</button>
-<button class="btn-admin" style="margin-top:10px;" onclick="closeDepositModal()">Close</button>
-<p id="depositMsg" style="color:green;"></p>
-</div>
-</div>
+    <!-- Hero -->
+    <header class="maroon-bg text-white py-20 px-4 text-center">
+        <h1 class="text-3xl md:text-5xl font-extrabold mb-4 uppercase">Al Arafa Packing Company</h1>
+        <p class="text-lg opacity-90 italic">Global Packaging Solutions</p>
+    </header>
 
-<script>
-// User info
-let user = { balance:0, dailyClaimed:false, lastCheckin:null, refCode:Math.random().toString(36).substring(2,8), refBonus:0, referrals:0, firstDepositDone:false };
-let userTransactions = [];
+    <!-- Gallery Section -->
+    <section class="py-12 max-w-6xl mx-auto px-4">
+        <h2 class="text-2xl font-bold text-center mb-10 border-b-4 border-yellow-500 inline-block mx-auto pb-2">Our Packing Services</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Photo 1 -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                <div class="h-64 bg-gray-200 flex items-center justify-center">
+                    <img src="IMAGE_LINK_1" alt="Al Arafa Card" class="w-full h-full object-cover">
+                </div>
+                <div class="p-4 text-center font-bold text-[#5c1d0d]">Official Business Card</div>
+            </div>
 
-// Update balance & transaction table
-function updateBalance(){
-  document.getElementById('balance').innerText = user.balance.toFixed(2);
-  document.getElementById('refBonus').innerText = user.refBonus.toFixed(2);
-  document.getElementById('refCount').innerText = user.referrals;
-  updateUserTxTable();
-}
-function updateUserTxTable(){
-  const tbody = document.getElementById('userTxTable');
-  tbody.innerHTML='';
-  for(let tx of userTransactions){
-    const tr = document.createElement('tr');
-    tr.innerHTML=`<td>${tx.time}</td><td>${tx.type}</td><td>${tx.amount.toFixed(2)}</td><td>${tx.detail}</td>`;
-    tbody.appendChild(tr);
-  }
-}
+            <!-- Photo 2 -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                <div class="h-64 bg-gray-200 flex items-center justify-center text-gray-400">
+                    <img src="IMAGE_LINK_2" alt="Stock Packing" class="w-full h-full object-cover">
+                </div>
+                <div class="p-4 text-center font-bold text-[#5c1d0d]">Warehouse Stock</div>
+            </div>
 
-// Deposit Modal
-function openDepositModal(){ 
-  let amount = document.getElementById('depositAmount').value;
-  document.getElementById('depositAmountDisplay').innerText = amount;
-  document.getElementById('depositModalOverlay').style.display='flex'; 
-}
-function closeDepositModal(){ 
-  document.getElementById('depositModalOverlay').style.display='none';
-  document.getElementById('trxId').value=''; 
-  document.getElementById('depositMsg').innerText=''; 
-}
-function submitDeposit(){
-  let amount = parseFloat(document.getElementById('depositAmount').value);
-  let trx = document.getElementById('trxId').value.trim();
-  if(!trx){ alert("Enter Transaction ID"); return; }
-  user.balance += amount;
-  user.firstDepositDone = true;
-  addTransaction('Deposit', amount, 'Txn ID: '+trx);
-  closeDepositModal();
-  updateBalance();
-  alert(`Deposit added: ${amount.toFixed(2)} Taka`);
-}
+            <!-- Photo 3 -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                <div class="h-64 bg-gray-200 flex items-center justify-center text-gray-400">
+                    <img src="IMAGE_LINK_3" alt="Carton Packing" class="w-full h-full object-cover">
+                </div>
+                <div class="p-4 text-center font-bold text-[#5c1d0d]">Export Quality Delivery</div>
+            </div>
 
-// Daily Income
-function claimDailyIncome(){
-  if(user.dailyClaimed){ alert("Already claimed!"); return; }
-  if(!user.firstDepositDone){ alert("Deposit first"); return; }
-  let dailyIncome = parseFloat(document.getElementById('depositAmount').value)*0.2;
-  user.balance += dailyIncome;
-  addTransaction('Daily Income', dailyIncome, '20% of deposit');
-  user.dailyClaimed = true;
-  updateBalance();
-  alert(`Daily income added: ${dailyIncome.toFixed(2)} Taka`);
-}
+        </div>
+    </section>
 
-// Check-in Bonus
-function claimCheckinBonus(){
-  let today = new Date().toDateString();
-  if(user.lastCheckin===today){ alert("Already claimed"); return; }
-  if(user.balance>0){
-    let bonus = user.balance*0.1;
-    user.balance += bonus;
-    user.lastCheckin=today;
-    addTransaction('Check-in Bonus', bonus, '10% of balance');
-    updateBalance();
-    alert(`Check-in bonus added: ${bonus.toFixed(2)} Taka`);
-  } else { alert("Deposit first"); }
-}
+    <!-- Address & Contact -->
+    <section class="bg-gray-100 py-16 px-4">
+        <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row">
+            <div class="maroon-bg text-white p-10 md:w-1/2">
+                <h3 class="text-3xl font-bold mb-6">Contact Info</h3>
+                <p class="text-xl mb-4 font-semibold"><i class="fas fa-phone mr-3"></i> 01701559326</p>
+                <p class="text-lg opacity-80"><i class="fas fa-envelope mr-3"></i> ml56543219f@gmail.com</p>
+            </div>
+            <div class="p-10 md:w-1/2">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Head Office</h3>
+                <p class="text-xl text-gray-600 leading-relaxed font-medium">
+                    Bogura, Satmatha,<br>
+                    Mass Building
+                </p>
+                <p class="mt-2 text-gray-500 italic">Rail Station, Uttor Colone</p>
+            </div>
+        </div>
+    </section>
 
-// Referral
-document.getElementById('refLink').value=window.location.href.split("?")[0]+"?ref="+user.refCode;
-function copyRef(){
-  let refInput=document.getElementById('refLink');
-  refInput.select(); refInput.setSelectionRange(0,99999);
-  document.execCommand("copy");
-  alert("Referral link copied!");
-}
-
-// Transactions
-function addTransaction(type, amount, detail){
-  let time = new Date().toLocaleString();
-  userTransactions.push({time,type,amount,detail});
-  updateUserTxTable();
-}
-
-// Admin login
-function adminLogin(){
-  const username = document.getElementById('adminUsername').value.trim();
-  const password = document.getElementById('adminPassword').value.trim();
-  if(username==='admin' && password==='Tasnia91223'){
-    alert("Admin login successful!");
-    document.getElementById('adminSection').style.display='block';
-  } else {
-    alert("Admin login failed!");
-    document.getElementById('adminSection').style.display='none';
-  }
-}
-
-// Admin add balance
-function addBalance(){
-  let ref = document.getElementById('adminRefCode').value.trim();
-  let amt = parseFloat(document.getElementById('adminAmount').value);
-  if(!ref || !amt){ alert("Enter all fields"); return; }
-  if(ref===user.refCode){
-    user.balance += amt;
-    addTransaction('Admin Add', amt, 'Admin added balance');
-    updateBalance();
-    alert(`Balance added: ${amt.toFixed(2)} Taka`);
-  } else {
-    alert("User not found in demo");
-  }
-}
-
-</script>
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-8 text-center text-sm">
+        <p>&copy; 2024 AL ARAFA PACKING COMPANY. All Rights Reserved.</p>
+    </footer>
 
 </body>
 </html>
